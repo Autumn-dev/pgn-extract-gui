@@ -3,9 +3,9 @@
 
 **Wrapper GUI for pgn-extract using Python.**
 
-See user guide for installation steps.
+See user guide for installation steps and app usage.
 
-Also see user guide for app usage.
+Project is made primarily in Python and uses json to store user configs.
 
 *(Build currently only working for Windows)*
 
