@@ -1,0 +1,5 @@
+pgn-extract.exe
+__pycache__
+*.pgn
+configs/*
+*.txt

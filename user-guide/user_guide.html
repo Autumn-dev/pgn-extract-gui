@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>pgn-extract Documentation</title>
+  <link rel="stylesheet" href="user_guide_style.css" />
+</head>
+<body>
+  <div class="search-bar-container">
+    <input type="text" id="searchInput" placeholder="Search...." class="search-bar" />
+    <button onclick="runSearch()" class="search-go">Go</button>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <nav id="nav"></nav>
+    <script src="nav.js"></script>
+    <!-- Main Content -->
+    <main class="main" id="main">
+      <h1 class="doc-title">pgn-extract GUI Documentation</h1>
+      <hr class="sidebar-divider" />
+
+      <h2>Introduction</h2>
+      <section id="overview">
+        <h3>Overview</h3>
+        <p>
+          This tool is a GUI for <span class="tooltip">pgn-extract <span class="tooltiptext">A tool that is used to extract chess games from PGN files using filters and options</span></span> 
+          which aims to improve the user experience by providing a graphical interface for the command-line tool and streamlining the usage of its features.
+        </p>
+        
+      </section>
+
+      <section id="requirements">
+        <h3>Requirements</h3>
+        <p>
+          The GUI requires the following:
+          <ul>
+            <li>Python3</li>
+            <li>PyQt6 installed</li>
+            <li>pgn-extract installed on your system in the same directory as the GUI.</li>
+            <li><b>(Windows & maxOS only)</b> A compatible operating system</li>
+            <li><b>(macOS only)</b> Command Line Tools</li>
+          </ul>
+        </p>
+      </section>
+
+      <section id="installation">
+        <h3>Installation</h3>
+        <p>Install the GUI application here: <a href="https://git.cs.kent.ac.uk/cs924/pgn-extract-gui">click here</a>.</p>
+        <p>If you already have a version of pgn-extract installed, move it to the same working directory as the GUI.</p>
+        <p>Otherwise, after installation, open the GUI app and go to the settings tab press to install pgn-extract</p>
+        <p>If not booting from a windows machine, you will need to open the terminal and navigate to the directory containing the GUI.
+          and install the requirments as so.
+        </p>
+        <div class="code-block"><pre><code>cd extracted/directory/of/pgn-extract</code></pre></div>
+        <div class="code-block"><pre><code>pip install -r requirements.txt</code></pre></div>
+        <p>Once the requirements are installed, you can run the GUI by executing the following command:</p>
+        <div class="code-block"><pre><code>python main.py</code></pre></div>
+      </section>
+
+      <section id="OSX and Linux">
+        <h3>OSX and Linux</h3>
+        <p>Installation of pgn-extract differs and can be manually installed or using the in-built installer in the GUI. (Can be unreliable.)</p>
+        <p>Please download the latest version <a href="https://www.cs.kent.ac.uk/~djb/pgn-extract/pgn-extract-25-01.zip">here</a>
+        and follow the steps in a terminal</p>
+        <pre><code>unzip pgn-extract-25-01.zip
+        <div class="code-block"><pre><code>cd extracted/directory/of/pgn-extract</code></pre></div>
+        <div class="code-block"><pre><code>make</code></pre></div>
+        <div class="code-block"><pre><code></code>sudo ln -s "$PWD/pgn-extract" /usr/loca/bin/pgn-extract </pre></div></code></pre>
+    </main>
+  </div>
+
+
+
+
+
+  <!-- JavaScript -->
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const main = document.getElementById("main");
+      const reopenBtn = document.getElementById("reopenBtn");
+
+      sidebar.classList.toggle("hidden");
+      main.classList.toggle("full");
+
+      if (sidebar.classList.contains("hidden")) {
+        reopenBtn.style.display = "block";
+      } else {
+        reopenBtn.style.display = "none";
+      }
+    }
+
+    function toggleSection(el) {
+      const links = el.nextElementSibling;
+      links.classList.toggle("show");
+      el.innerHTML = el.innerHTML.includes("▸")
+        ? el.innerHTML.replace("▸", "▾")
+        : el.innerHTML.replace("▾", "▸");
+    }
+
+    function toggleDarkMode() {
+      const dark = document.getElementById("darkToggle").checked;
+      document.body.classList.toggle("dark", dark);
+      localStorage.setItem("darkMode", dark);
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark");
+        document.getElementById("darkToggle").checked = true;
+      }
+    };
+
+    function runSearch() {
+  const query = document.getElementById("searchInput").value.trim().toLowerCase();
+  const sections = document.querySelectorAll("main section");
+
+  sections.forEach(section => {
+    // Remove previous highlights
+    removeHighlights(section);
+
+    const textContent = section.innerText.toLowerCase();
+
+    if (query === "") {
+      section.style.display = "block";
+    } else if (textContent.includes(query)) {
+      section.style.display = "block";
+      highlightMatches(section, query);
+    } else {
+      section.style.display = "none";
+    }
+  });
+}
+
+function highlightMatches(container, query) {
+  const regex = new RegExp(`(${query})`, "gi");
+
+  container.querySelectorAll("*").forEach(node => {
+    if (node.children.length === 0 && node.textContent.trim()) {
+      node.innerHTML = node.textContent.replace(regex, '<span class="highlighted">$1</span>');
+    }
+  });
+}
+
+function removeHighlights(container) {
+  container.querySelectorAll("span.highlighted").forEach(span => {
+    span.outerHTML = span.innerText;
+  });
+}
+
+  
+
+  // Optional: Press Enter to search
+  document.getElementById("searchInput").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      runSearch();
+    }
+  });
+  </script>
+</body>
+</html>

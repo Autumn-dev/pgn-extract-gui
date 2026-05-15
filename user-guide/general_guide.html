@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>pgn-extract Documentation</title>
+  <link rel="stylesheet" href="user_guide_style.css" />
+</head>
+<body>
+  <div class="search-bar-container">
+    <input type="text" id="searchInput" placeholder="Search...." class="search-bar" />
+    <button onclick="runSearch()" class="search-go">Go</button>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <nav id="nav"></nav>
+    <script src="nav.js"></script>
+
+    <!-- Reopen Sidebar Button -->
+    <button class="reopen-btn" onclick="toggleSidebar()" id="reopenBtn">☰</button>
+
+    <!-- Main Content -->
+    <main class="main" id="main">
+      <h1 class="doc-title">Opening pgn files with the GUI</h1>
+      <hr class="sidebar-divider" />
+      <img src="../imgs/mainui_image.png" alt="Main UI" class="pgn-images"  />
+      <p>
+        The main user interface of pgn-extract is designed to be intuitive and user-friendly. It allows you to open and manage pgn files easily.
+      </p>
+      <p>
+        The simplest way to open a pgn file is to click on the "Browse for pgns" button, from there you will select the pgn files
+        from your computer.
+      </p>
+      <h1 class="doc-title">Help</h1>
+      <hr class="sidebar-divider" />
+      <img src="../imgs/tooltip_image.png" alt="Tooltip" class="pgn-images"  />
+      <p>
+        Hovering over most text labels will show you what flag is represented as well as a short description on the functionality of it.
+      </p>
+
+    </main>
+  </div>
+
+
+
+
+
+  <!-- JavaScript -->
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const main = document.getElementById("main");
+      const reopenBtn = document.getElementById("reopenBtn");
+
+      sidebar.classList.toggle("hidden");
+      main.classList.toggle("full");
+
+      if (sidebar.classList.contains("hidden")) {
+        reopenBtn.style.display = "block";
+      } else {
+        reopenBtn.style.display = "none";
+      }
+    }
+
+    function toggleSection(el) {
+      const links = el.nextElementSibling;
+      links.classList.toggle("show");
+      el.innerHTML = el.innerHTML.includes("▸")
+        ? el.innerHTML.replace("▸", "▾")
+        : el.innerHTML.replace("▾", "▸");
+    }
+
+    function toggleDarkMode() {
+      const dark = document.getElementById("darkToggle").checked;
+      document.body.classList.toggle("dark", dark);
+      localStorage.setItem("darkMode", dark);
+    }
+
+    window.onload = () => {
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark");
+        document.getElementById("darkToggle").checked = true;
+      }
+    };
+
+    function runSearch() {
+  const query = document.getElementById("searchInput").value.trim().toLowerCase();
+  const sections = document.querySelectorAll("main section");
+
+  sections.forEach(section => {
+    // Remove previous highlights
+    removeHighlights(section);
+
+    const textContent = section.innerText.toLowerCase();
+
+    if (query === "") {
+      section.style.display = "block";
+    } else if (textContent.includes(query)) {
+      section.style.display = "block";
+      highlightMatches(section, query);
+    } else {
+      section.style.display = "none";
+    }
+  });
+}
+
+function highlightMatches(container, query) {
+  const regex = new RegExp(`(${query})`, "gi");
+
+  container.querySelectorAll("*").forEach(node => {
+    if (node.children.length === 0 && node.textContent.trim()) {
+      node.innerHTML = node.textContent.replace(regex, '<span class="highlighted">$1</span>');
+    }
+  });
+}
+
+function removeHighlights(container) {
+  container.querySelectorAll("span.highlighted").forEach(span => {
+    span.outerHTML = span.innerText;
+  });
+}
+
+  
+
+  // Optional: Press Enter to search
+  document.getElementById("searchInput").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      runSearch();
+    }
+  });
+  </script>
+</body>
+</html>
